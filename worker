@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+require "environment.rb"
+require "bioteam/lib/worker.rb"
+
+$0 = "worker"
+
+case ARGV.shift
+when "start"
+  puts "Starting worker"
+  pid = fork do
+    @worker = Worker.new($inbound_queue, $outbound_queue)
+    @worker.run
+  end
+  open('worker.pid','w'){|f| f.write pid }
+when "stop"
+  puts "Stopping worker"
+  pid = File.read('worker.pid')
+  %x[kill -s INT #{pid}]
+  File.delete('worker.pid')
+else
+  puts "Usage: #{$0} (start|stop)"
+end
