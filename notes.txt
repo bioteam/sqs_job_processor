@@ -1,5 +1,0 @@
-start the worker
-./worker start
-
-submit a job
-ec2-submit.rb example.job
